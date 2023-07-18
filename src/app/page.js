@@ -1,29 +1,28 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 
-// object to array
-const filterJson = (json) => {
-  var _items = []
+const apiURL = 'https://blockchain.info/ticker'
+const toArray = (json) => {
+  let _items = []
   for (let item in json) {
     _items = _items.concat(json[item])
   }
   return _items
-}  
+}
 
 export default function Home() {
   const [data, setData] = useState(null)
- 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('https://blockchain.info/ticker')
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      const result = await response.json()
-      setData(filterJson(result))
+  const fetchData = async (url) => {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
- 
-    fetchData().catch((e) => {
+    const result = await response.json()
+    setData(toArray(result))
+  }
+
+  useEffect(() => {
+    fetchData(apiURL).catch((e) => {
       // handle the error as needed
       console.error('An error occurred while fetching the data: ', e)
     })
