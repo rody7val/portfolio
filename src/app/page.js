@@ -1,38 +1,85 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import variables from './variables.modules.scss'
+import { useState } from 'react'
+// Logo is a Server Component
+import Logo from './logo.js'
 
-const apiURL = 'https://blockchain.info/ticker'
-
-export default function Home() {
-  const [data, setData] = useState(null)
-
-  const fetchData = async (url) => {
-    const response = await fetch(url)
-    if (!response.ok) {
-      setData([])
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    const result = await response.json()
-    setData(Object.entries(result))
-  }
-
-  useEffect(() => {
-    fetchData(apiURL).catch((e) => {
-      // handle the error as needed
-      console.error('An error occurred while fetching the data: ', e)
-    })
-  }, [])
-
-  const items = (data && data.length) ? data.map((item, key) =>
-    <li key={key.toString()}>
-       <code>${`${item[1].last}`}</code> <b>{`${item[0]}`}</b>
-    </li>
-  ) : <div>cargando...</div>
-
+export default function Page() {
+  const checkList = [{
+      name:"Precio de Bitcoin",
+      url: "/btc-price",
+      tag: "btc",
+      price: "Gratis",
+      desc: "Software práctico para saber a cuanto equivale un BTC. De consulta diaria."
+    }, {
+      name:"Historia Clínica",
+      url: "https://historia-clinica-demo.web.app",
+      tag: "hc",
+      price: "$5 USD/mes",
+      desc: "Software veterinario que registra historias clínicas de pacientes. Cuenta con carga de imágenes y agenda de turnos. Accedé con Google y probalo."
+    },
+  ];
+  const [checked, setChecked] = useState({});
+  // Add/Remove checked item from list
+  const handleCheck = (event) => {
+    const filteredItem = checkList.find(item => item.tag === event.target.value);
+    setChecked(filteredItem);
+  };
+  // Reset checked item from list
+  const handleReset = (event) => {
+    setChecked({});
+    event.target.reset();
+  };
+  // Return classes based on whether item is checked
+  // const isChecked = (item) => checked.includes(item) ? "checked-item" : "not-checked-item";
+  
   return (
-    <div>
-      <b>1 BTC = </b>
-      <ul style={{"padding-left": "20px"}}>{items}</ul>
-    </div>
-  )
+  <div>
+    <header>
+      <nav>
+        <Logo />
+      </nav>
+    </header>
+
+    <main>
+      <form onReset={handleReset} className={variables.listContainer}>
+        <b>Demos:</b>
+        {checkList.map((item, index) => (
+          <div key={index}>
+            <input
+              type="radio"
+              value={item.tag}
+              id={item.tag}
+              name="gender"
+              onInput={handleCheck}
+            />
+            <label for={item.tag}>{item.name}</label>
+          </div>
+        ))}
+        <input type="reset" value="Reset"/>
+      </form>
+      {checked.desc &&
+        <p>{checked.desc}</p>
+      }
+      {checked.price &&
+        <p><code>{checked.price}</code></p>
+      }
+    </main>
+
+    <section>
+      {/*<pre>{JSON.stringify(checked, null, 2)}</pre>*/}
+      {checked.url &&
+        <iframe
+          id={checked.url}
+          width="100%"
+          height="100%"
+          src={checked.url}
+        ></iframe>
+      }
+      {!checked.url &&
+        <p>&nbsp;Selecciona una opción...</p>
+      }
+    </section>
+  </div>
+  );
 }
