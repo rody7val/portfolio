@@ -25,14 +25,16 @@ export default function Home() {
 
   const items = (data && data.length) ? data.map((item, key) =>
     <li key={key.toString()}>
-      <code>${`${item[1].last}`}</code> <b>{`${item[0]}`}</b>
+      <samp>${`${item[1].last}`} <kbd>{`${item[0]}`}</kbd></samp>
     </li>
   ) : <div>cargando...</div>
 
   return (
-    <div>
-      <b>1 BTC = </b>
-      <ul style={{ "paddingLeft": "20px" }}>{items}</ul>
-    </div>
+    <>
+      <ul>
+        <h3>₿1 <kbd>BTC</kbd> = </h3>
+        {items}
+      </ul>
+    </>
   )
 }

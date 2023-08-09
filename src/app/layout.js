@@ -1,5 +1,7 @@
-// import variables from './variables.modules.scss'
+import './globals.scss'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Inter } from 'next/font/google'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
